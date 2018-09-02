@@ -36,6 +36,7 @@ any I/O library of choice.
 * Binary or text (Json, XML) serialization.
 * Support for either Asio Standalone or Boost Asio.
 * Support for Asio tcp sockets.
+* Support of Qt sockets available as a separate library (CerQall).
 * Support for interface inheritance.
 * Support for one-way function calls.
 * Queueing of function calls on the client side.
@@ -49,6 +50,16 @@ any I/O library of choice.
 Threads add complexity to every program. With CerCall it is easy to add another process instead of a thread. I follow the **KISS** principle and try to avoid threads in the first place, preferring asynchronous approaches.
 * Function overloading is not supported - every CerCall function in an interface must have a unique name.
 * Developed and tested under Linux only.
+
+## Dependencies
+
+Developed and tested on Ubuntu 18.04.1, with:
+
+* Asio Standalone ver. 1.10.6, 1.12.1
+* Boost ver. 1.67
+* Googletest ver. 1.7.0
+* Cereal ver. 1.2.2
+* gcc ver. 7.3.0
 
 ## A quick how-to
 

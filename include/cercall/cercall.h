@@ -144,7 +144,7 @@ public:
     }
 
 private:
-    const std::shared_ptr<Transport> myTransport;
+    std::shared_ptr<Transport> myTransport;
 };
 
 }   //namespace cercall

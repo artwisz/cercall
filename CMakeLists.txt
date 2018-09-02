@@ -23,7 +23,7 @@ cmake_minimum_required(VERSION 3.1.0)
 
 enable_testing()
 
-install(DIRECTORY include DESTINATION include)
+install(DIRECTORY include/cercall DESTINATION include)
 
 option(USE_BOOST_ASIO "use Boost.Asio" false)
 option(USE_CEREAL "use Cereal serialization" true)
