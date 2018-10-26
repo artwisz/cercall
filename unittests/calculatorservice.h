@@ -34,6 +34,9 @@ public:
     {
         O_ADD_SERVICE_FUNCTIONS_OF(CalculatorInterface, false, add, add_vector, add_and_delay_result);
         O_ADD_SERVICE_FUNCTIONS_OF(CalculatorInterface, false, get_connected_clients_count);
+#if defined(TEST_CEREAL_BINARY) || defined(TEST_CEREAL_JSON)
+        O_ADD_SERVICE_FUNCTIONS_OF(CalculatorInterface, false, add_by_pointers);
+#endif
         O_ADD_SERVICE_FUNCTIONS_OF(CalculatorInterface, true, close_service);
     }
 
@@ -69,6 +72,13 @@ public:
         }
         cl(result);
     }
+
+#if defined(TEST_CEREAL_BINARY) || defined(TEST_CEREAL_JSON)
+    void add_by_pointers(std::unique_ptr<int32_t> a, std::unique_ptr<int32_t> b, cercall::Closure<int32_t> cl) override
+    {
+        cl(*a + *b);
+    }
+#endif
 
     void close_service(void) override
     {

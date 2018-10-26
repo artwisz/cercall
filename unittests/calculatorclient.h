@@ -49,6 +49,13 @@ public:
         this->send_call(__func__, cl, a, b);
     }
 
+#if defined(TEST_CEREAL_BINARY) || defined(TEST_CEREAL_JSON)
+    void add_by_pointers(std::unique_ptr<int32_t> a, std::unique_ptr<int32_t> b, cercall::Closure<int32_t> cl) override
+    {
+        this->send_call(__func__, cl, std::move(a), std::move(b));
+    }
+#endif
+
     void close_service(void) override
     {
         this->send_call(__func__);

@@ -90,6 +90,22 @@ TEST_F(CallTest, test_simple_call)
     EXPECT_FALSE(myClient->is_call_in_progress("add"));
 }
 
+//Boost.Serialization does not support serialization of pointers to primitive types.
+#if defined(TEST_CEREAL_BINARY) || defined(TEST_CEREAL_JSON)
+TEST_F(CallTest, test_pointers)
+{
+    bool gotResult = false;
+    auto x = std::make_unique<int32_t>(1234);
+    auto y = std::make_unique<int32_t>(4321);
+    myClient->add_by_pointers(std::move(x), std::move(y), [&gotResult](const cercall::Result<int32_t>& res){
+        EXPECT_FALSE( !res);
+        ASSERT_EQ(res.get_value(), (1234 + 4321));
+        gotResult = true;
+    });
+    EXPECT_EQ(process_io_events(gotResult, 2), true);
+}
+#endif
+
 TEST_F(CallTest, test_queued_calls)
 {
     bool gotResultCall1 = false;

@@ -77,10 +77,10 @@ struct Serialization
         if (ar == nullptr) {
             OutputArchive arMsg(outStringStream);     //heavy
             arMsg(::cereal::make_nvp("func", functionName));
-            serialize_args(arMsg, args...);
+            serialize_args(arMsg, std::forward<Args>(args)...);
         } else {
             (*ar)(::cereal::make_nvp("func", functionName));
-            serialize_args(*ar, args...);
+            serialize_args(*ar, std::forward<Args>(args)...);
         }
         return outStringStream.str();
     }
@@ -165,9 +165,9 @@ struct Serialization
     static typename std::enable_if<std::is_polymorphic<E>::value>::type
     deserialize_event(InputArchive& arEv, EventHandler handler)
     {
-        std::shared_ptr<E> ev;
+        std::unique_ptr<E> ev;
         arEv(ev);
-        handler(ev);
+        handler(std::move(ev));
     }
 
     /** Deserialize a non-polymorphic event. */

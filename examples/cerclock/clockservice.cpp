@@ -38,8 +38,7 @@ void ClockService::get_time(cercall::Closure<std::chrono::system_clock::time_poi
 void ClockService::tickTimer(const cercall::asio::ErrorCode& ec)
 {
     if (ec != asio::error::operation_aborted) {
-        std::shared_ptr<ClockTickEvent> ev = std::make_shared<ClockTickEvent>(std::chrono::system_clock::now());
-        broadcast_event(ev);
+        broadcast_event<ClockTickEvent>(std::chrono::system_clock::now());
         if (myTickInterval != std::chrono::milliseconds::zero()) {
             myTickTimer.expires_at(myTickTimer.expires_at() + myTickInterval);
             myTickTimer.async_wait(std::bind(&ClockService::tickTimer, shared_from_this(), std::placeholders::_1));
@@ -76,8 +75,7 @@ void ClockService::set_alarm(std::string tag, std::chrono::system_clock::duratio
     Alarm& theAlarm = myAlarms.back();
     theAlarm.myTimer.async_wait([shared_this, &theAlarm](const cercall::asio::ErrorCode& ec) {
         if (ec != asio::error::operation_aborted) {
-            std::shared_ptr<ClockAlarmEvent> ev = std::make_shared<ClockAlarmEvent>(theAlarm.myId, theAlarm.myTag);
-            shared_this->broadcast_event(ev);
+            shared_this->broadcast_event<ClockAlarmEvent>(theAlarm.myId, theAlarm.myTag);
         }
         //Purge the alarm.
         auto it = shared_this->find_alarm(theAlarm.myId);

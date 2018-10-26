@@ -53,7 +53,7 @@ template<typename EventType>
 class ServiceListener<EventType, typename std::enable_if<std::is_polymorphic<EventType>::value>::type>
 {
 public:
-    virtual void on_service_event(std::shared_ptr<EventType> &e) = 0;
+    virtual void on_service_event(std::unique_ptr<EventType> e) = 0;
     virtual ~ServiceListener() {}
 };
 
@@ -178,7 +178,7 @@ protected:
     template<typename ResT, typename... Args>
     void send_call(const char* funcName, const Closure<ResT>& c, Args... args)
     {
-        auto result = prepare_call_message(funcName, args...);
+        auto result = prepare_call_message(funcName, std::forward<Args>(args)...);
         const std::string& fullFuncName = result.first;
         std::string& msg = result.second;
         if (myClosures.find(fullFuncName) == myClosures.end()) {
@@ -210,10 +210,9 @@ protected:
     template<typename... Args>
     void send_call(const char* funcName, Args... args)
     {
-        std::string msg = prepare_call_message(funcName, args...).second;
+        std::string msg = prepare_call_message(funcName, std::forward<Args>(args)...).second;
         details::Messenger::write_message_with_header(*myTransport, msg);
     }
-
 
     template<typename S = Serialization>
     void create_archives(typename std::enable_if<S::REUSABLE_ARCHIVE>::type* = nullptr)
@@ -322,7 +321,7 @@ private:
             check_thread_id("cercall::Client::prepare_call_message()");
             std::string fullFuncName = myFuncPrefix;
             fullFuncName += funcName;       //new
-            return std::make_pair(fullFuncName, Serialization::serialize_call(myArchives.outArch.get(), fullFuncName, args...));
+            return std::make_pair(fullFuncName, Serialization::serialize_call(myArchives.outArch.get(), fullFuncName, std::forward<Args>(args)...));
         } else {
             throw std::runtime_error("cercall::Client::prepare_call_message: transport to service not opened");
         }
@@ -358,9 +357,9 @@ private:
     typename std::enable_if<!std::is_void<E>::value>::type
     dispatch_event(ResultArchive& arEv) const
     {
-        Serialization::template deserialize_event<EventType>(arEv, [this](auto& ev) {      //C++14 feature used
+        Serialization::template deserialize_event<EventType>(arEv, [this](auto ev) {      //C++14 feature used
             for (auto listener : myEventListeners) {
-                listener->on_service_event(ev);
+                listener->on_service_event(std::move(ev));
             }
         });
     }

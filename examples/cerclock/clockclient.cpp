@@ -46,7 +46,7 @@ std::string time_point_to_str(const std::chrono::system_clock::time_point& tp)
 struct ClockListener : public ClockClient::ServiceListener
 {
     ClockListener(std::shared_ptr<ClockClient>& cc) : myClient(cc) {}
-    void on_service_event(std::shared_ptr<ClockClient::EventType>& event) override
+    void on_service_event(std::unique_ptr<ClockClient::EventType> event) override
     {
         std::cout << "received " << event->get_class_name() << "\n";
         const ClockAlarmEvent* clockEvent = event->get_as<ClockAlarmEvent>();

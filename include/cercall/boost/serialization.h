@@ -172,9 +172,9 @@ struct Serialization
     static typename std::enable_if<std::is_polymorphic<E>::value>::type
     deserialize_event(InputArchive& arEv, EventHandler handler)
     {
-        std::shared_ptr<E> ev;
+        std::unique_ptr<E> ev;
         arEv & ev;
-        handler(ev);
+        handler(std::move(ev));
     }
 
     /** Deserialize a non-polymorphic event. */

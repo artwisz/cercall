@@ -114,38 +114,16 @@ public:
 
     /**
      * @brief Broadcast a polymorphic event to each connected client.
-     * Events must be serializable.
+     * Event types must be serializable.
+     * The function constructs an event object passing the function arguments to the constructor.
+     * @args arguments to the constructor of the derived event type
      */
-    template<typename E = EventType>
-    typename std::enable_if<std::is_polymorphic<E>{}>::type
-    broadcast_event(const std::shared_ptr<EventType>& e)
-    {
-        broadcast(e);
-    }
-
-    /**
-     * @brief Broadcast a polymorphic event to each connected client.
-     * Overload for derived event types.
-     */
-    template<typename DerivedET>
+    template<typename DerivedET, typename... EventArgs>
     typename std::enable_if<std::is_polymorphic<EventType>{} && std::is_base_of<EventType, DerivedET>{}>::type
-    broadcast_event(const std::shared_ptr<DerivedET>& e)
+    broadcast_event(EventArgs&&... args)
     {
-        const std::shared_ptr<EventType>&ev = e;
-        broadcast(ev);
-    }
-
-    /**
-     * @brief Broadcast a polymorphic event to each connected client.
-     * This overloaded function is for events not created on the heap.
-     * The event type must have a clone() function which creates a copy
-     * of the event on the heap.
-     */
-    template<typename E = EventType>
-    typename std::enable_if<std::is_polymorphic<E>{}>::type
-    broadcast_event(const E& ev)
-    {
-        broadcast_event(ev.clone());
+        std::unique_ptr<EventType> e { new DerivedET(std::forward<EventArgs>(args)...) };
+        broadcast(e);
     }
 
     /**
@@ -157,6 +135,23 @@ public:
     {
         static_assert(std::is_same<E, EventType>::value, "Invalid event parameter type");
         broadcast(ev);
+    }
+
+    /**
+     * @note The shared_ptr may not be used because of the Cereal object tracking feature, which prevents reuse of
+     * the binary archive when using shared_ptr.
+     */
+    template<typename E = EventType>
+    void broadcast_event(const std::shared_ptr<EventType>&)
+    {
+        static_assert( !std::is_same<E, E>::value, "Please do not use shared_ptr type for events");
+    }
+
+    template<typename DerivedET>
+    typename std::enable_if<std::is_polymorphic<EventType>{} && std::is_base_of<EventType, DerivedET>{}>::type
+    broadcast_event(const std::shared_ptr<DerivedET>&)
+    {
+        static_assert( !std::is_same<DerivedET, DerivedET>::value, "Please do not use shared_ptr type for events");
     }
 
 protected:
@@ -318,13 +313,14 @@ private:
     }
 
     template<typename T>
-    void broadcast(const T& ev)
+    void broadcast(T&& ev)
     {
         check_thread_id("cercall::Service::broadcast");
         if ( !myClients.empty()) {
             for (auto& client : myClients) {
                 ClientState& cs = client.second;
-                std::string msg { Serialization::template serialize_event<T>(cs.get_output_archive(), bcastFuncName, ev) };
+                std::string msg { Serialization::template serialize_event<T>(cs.get_output_archive(), bcastFuncName,
+                                                                             std::forward<T>(ev)) };
                 details::Messenger::write_message_with_header(*client.second.myTransport, msg);
             }
         }

@@ -91,19 +91,19 @@ private:
     template<class Head, class... Tail, class... Collected>
     void deserialize_args(SrvIfc& obj, ArgArch& args, Closure<R>& cl, type_tuple<Head, Tail...>, Collected... c)
     {
-        deserialize_args<Tail...>(obj, args, cl, type_tuple<Tail...>{}, c..., get<Head>(args));
+        deserialize_args<Tail...>(obj, args, cl, type_tuple<Tail...>{}, std::forward<Collected>(c)..., get<Head>(args));
     }
 
     template<class... Collected>
     void deserialize_args(SrvIfc& obj, ArgArch&, Closure<R>& cl, type_tuple<>, Collected... c)
     {
-        call_func(obj, cl, std::integral_constant<bool, OneWay>(), c...);
+        call_func(obj, cl, std::integral_constant<bool, OneWay>(), std::forward<Collected>(c)...);
     }
 
     template<class... Collected>
     void call_func(SrvIfc& obj, Closure<R>& cl, std::false_type, Collected... c)
     {
-        myFunc(obj, c..., cl);
+        myFunc(obj, std::forward<Collected>(c)..., cl);
     }
 
     //Overload for the one-way service functions.
@@ -111,7 +111,7 @@ private:
     void call_func(SrvIfc& obj, Closure<R>&, std::true_type, Collected... c)
     {
         //One-way functions don't have the Closure parameter.
-        myFunc(obj, c...);
+        myFunc(obj, std::forward<Collected>(c)...);
     }
 
     //T must have a default constructor.

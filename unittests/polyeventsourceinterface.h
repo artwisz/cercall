@@ -39,7 +39,7 @@
 #elif defined(TEST_BOOST_TEXT) || defined(TEST_BOOST_BINARY)
 #include <boost/serialization/access.hpp>
 #include <boost/serialization/utility.hpp>
-#include <boost/serialization/shared_ptr.hpp>
+#include <boost/serialization/unique_ptr.hpp>
 #include <boost/serialization/export.hpp>
 #include <boost/serialization/map.hpp>
 #define USING_BOOST
@@ -47,7 +47,7 @@
 
 struct EventBase
 {
-    using Ptr = std::shared_ptr<EventBase>;
+    using Ptr = std::unique_ptr<EventBase>;
 
     EventBase() {}
     virtual ~EventBase() {}
@@ -117,7 +117,7 @@ struct RealEventClassThree : public RealEventClassTwo
 {
     using EventDataType = std::map<std::string, int>;
     RealEventClassThree() : RealEventClassTwo() {}
-    RealEventClassThree(EventDataType &eventDict) : myEventDict(eventDict) {}
+    RealEventClassThree(const EventDataType &eventDict) : myEventDict(eventDict) {}
 
     EventDataType myEventDict;
 
@@ -162,7 +162,7 @@ public:
     static_assert(cereal::traits::is_input_serializable<EventType, InputArchive>::value == true, "");
 #endif
 
-    virtual void trigger_single_broadcast(const std::shared_ptr<EventType>& e) = 0;
+    virtual void trigger_single_broadcast(std::unique_ptr<EventType> e) = 0;
 };
 
 #endif // CERCALL_POLYEVENTSOURCEINTERFACE_H

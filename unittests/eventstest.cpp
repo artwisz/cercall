@@ -46,9 +46,9 @@ class PolyEventSourceClient : public cercall::Client<PolyEventSourceInterface>
 public:
     PolyEventSourceClient(std::unique_ptr<cercall::Transport> tr) : cercall::Client<PolyEventSourceInterface>(std::move(tr)) {}
 
-    void trigger_single_broadcast(const EventType::Ptr& e) override
+    void trigger_single_broadcast(EventType::Ptr e) override
     {
-        send_call(__func__, e);
+        send_call(__func__, std::move(e));
     }
 };
 
@@ -144,9 +144,9 @@ public:
     {
         reset();
     }
-    void on_service_event(PolyEventSourceClient::EventType::Ptr &ev) override
+    void on_service_event(PolyEventSourceClient::EventType::Ptr ev) override
     {
-        receivedEvent = ev;
+        receivedEvent = std::move(ev);
         gotEvent = true;
     }
 
@@ -165,8 +165,8 @@ TEST_F(PolyEventsTest, test_poly_events)
     {
         myClient->add_listener(polyEventsListener);
         std::string testEventDataClassOne = "test event class one";
-        PolyEventSourceClient::EventType::Ptr ev = std::make_shared<RealEventClassOne>(testEventDataClassOne);
-        myClient->trigger_single_broadcast(ev);
+        PolyEventSourceClient::EventType::Ptr ev = std::make_unique<RealEventClassOne>(testEventDataClassOne);
+        myClient->trigger_single_broadcast(std::move(ev));
         EXPECT_EQ(process_io_events(polyEventsListener.gotEvent, 2), true);
         const auto evClassOne = polyEventsListener.receivedEvent->get_as<RealEventClassOne>();
         EXPECT_NE(evClassOne, nullptr);
@@ -176,8 +176,8 @@ TEST_F(PolyEventsTest, test_poly_events)
     {
         polyEventsListener.reset();
         int testEventDataClassTwo = 123654;
-        PolyEventSourceClient::EventType::Ptr ev = std::make_shared<RealEventClassTwo>(testEventDataClassTwo);
-        myClient->trigger_single_broadcast(ev);
+        PolyEventSourceClient::EventType::Ptr ev = std::make_unique<RealEventClassTwo>(testEventDataClassTwo);
+        myClient->trigger_single_broadcast(std::move(ev));
         EXPECT_EQ(process_io_events(polyEventsListener.gotEvent, 2), true);
         const auto evClassTwo = polyEventsListener.receivedEvent->get_as<RealEventClassTwo>();
         EXPECT_NE(evClassTwo, nullptr);
@@ -190,8 +190,8 @@ TEST_F(PolyEventsTest, test_poly_events)
         testEventDataClassThree["one"] = 1;
         testEventDataClassThree["two"] = 2;
         testEventDataClassThree["three"] = 3;
-        PolyEventSourceClient::EventType::Ptr ev = std::make_shared<RealEventClassThree>(testEventDataClassThree);
-        myClient->trigger_single_broadcast(ev);
+        PolyEventSourceClient::EventType::Ptr ev = std::make_unique<RealEventClassThree>(testEventDataClassThree);
+        myClient->trigger_single_broadcast(std::move(ev));
         EXPECT_EQ(process_io_events(polyEventsListener.gotEvent, 2), true);
         const auto evClassThree = polyEventsListener.receivedEvent->get_as<RealEventClassThree>();
         EXPECT_NE(evClassThree, nullptr);

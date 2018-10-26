@@ -40,7 +40,7 @@
 #include <boost/serialization/access.hpp>
 #include <boost/serialization/vector.hpp>
 #include <boost/serialization/utility.hpp>
-#include <boost/serialization/shared_ptr.hpp>
+#include <boost/serialization/unique_ptr.hpp>
 #endif
 
 O_REGISTER_TYPE(CalculatorInterface);
@@ -66,6 +66,11 @@ public:
     virtual void add_and_delay_result(int32_t a, int32_t b, Closure<int32_t> cl) = 0;
 
     virtual void add_vector(const std::vector<int32_t>& a, const std::vector<int32_t>& b, Closure<std::vector<int64_t>> cl) = 0;
+
+    //Boost.Serialization does not support serialization of pointers to primitive types.
+#if defined(TEST_CEREAL_BINARY) || defined(TEST_CEREAL_JSON)
+    virtual void add_by_pointers(std::unique_ptr<int32_t> a, std::unique_ptr<int32_t> b, Closure<int32_t> cl) = 0;
+#endif
 
     virtual void close_service(void) = 0;   ///< One-way function.
 
