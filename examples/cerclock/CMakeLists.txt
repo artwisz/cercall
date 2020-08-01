@@ -36,3 +36,11 @@ if (NOT ${USE_ASIO_STANDALONE})
     target_link_libraries(clockservice ${BOOST_SYSTEM} ${BOOST_SERIALIZATION})
     target_link_libraries(clockclient ${BOOST_SYSTEM} ${BOOST_SERIALIZATION})
 endif (NOT ${USE_ASIO_STANDALONE})
+
+if (${USE_PYBIND11})
+find_package(PythonLibs 3)
+include_directories(${PYTHON_INCLUDE_DIRS})
+pybind11_add_module(pyclock python/pyclockclient.cpp)
+
+configure_file(${CMAKE_CURRENT_SOURCE_DIR}/python/clockclient.py ${CMAKE_CURRENT_BINARY_DIR}/clockclient.py COPYONLY)
+endif (${USE_PYBIND11})
