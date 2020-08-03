@@ -39,7 +39,7 @@ void log(LogLevel, const char*, const char*, Args...)
 {
 }
 
-void assert_failed()
+inline void assert_failed()
 {
     abort();
 }
@@ -79,7 +79,7 @@ void log(const char* logToken, const char* format, Args... args)
     cercall_user_log::log<logLevel>(logLevel, logToken, format, args...);
 }
 
-void log_assert(bool cond, const char* file, int line, const char* condStr)
+inline void log_assert(bool cond, const char* file, int line, const char* condStr)
 {
 #ifndef NDEBUG
     if ( !cond) {

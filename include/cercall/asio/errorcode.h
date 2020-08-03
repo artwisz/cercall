@@ -58,7 +58,7 @@ inline const ErrorCategory& system_category()
 
 #endif  //ASIO_STANDALONE
 
-const Error& Error::operation_in_progress()
+inline const Error& Error::operation_in_progress()
 {
     static std::unique_ptr<Error> err = cercall::make_unique<Error>(asio::ErrorCode(EINPROGRESS, asio::system_category()));
     return *err;
