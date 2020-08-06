@@ -51,7 +51,7 @@ public:
 
 protected:
     BaseResult(const T& v) : value(v) {}
-    BaseResult() {}
+    BaseResult() : value{} {}
 
     T value;
 };
