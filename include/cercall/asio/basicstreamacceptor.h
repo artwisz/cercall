@@ -44,7 +44,7 @@ public:
         log<trace>(O_LOG_TOKEN, "");
     }
 
-    virtual ~BasicStreamAcceptor()
+    virtual ~BasicStreamAcceptor() noexcept(false)
     {
         log<trace>(O_LOG_TOKEN, "");
         if (myAcceptor.is_open()) {

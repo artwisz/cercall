@@ -81,7 +81,6 @@ public:
     }
     virtual ~Service()
     {
-        check_thread_id("cercall::~Service");
         stop();
     }
 

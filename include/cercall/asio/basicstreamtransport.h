@@ -52,7 +52,7 @@ public:
     }
     BasicStreamTransport(const BasicStreamTransport&) = delete;
     BasicStreamTransport& operator=(const BasicStreamTransport&) = delete;
-    virtual ~BasicStreamTransport()
+    virtual ~BasicStreamTransport() noexcept(false)
     {
         log<trace>(O_LOG_TOKEN, "");
         if (myState != State::CLOSED) {

@@ -100,7 +100,6 @@ public:
     virtual ~Client()
     {
         o_assert(myTransport != nullptr);
-        check_thread_id("cercall::Client::~Client()");
         myTransport->close();
         myTransport->clear_listener();
     }

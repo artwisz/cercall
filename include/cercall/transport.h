@@ -64,7 +64,7 @@ public:
         virtual uint32_t on_incoming_data(Transport& tr, uint32_t dataLenInBuffer) = 0;
     };
 
-    virtual ~Transport() {}
+    virtual ~Transport() noexcept(false) {}
 
     /**
      * Set the listener of the Transport object.

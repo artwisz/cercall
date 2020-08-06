@@ -123,7 +123,7 @@ private:
     enum class MsgRecvState    {   HEADER, MESSAGE };
 
     MsgRecvState myReceiveState = MsgRecvState::HEADER;
-    MessageSizeType myIncomingMsgSize;
+    MessageSizeType myIncomingMsgSize = 0;
     HandlerType myMsgHandler;
 };
 

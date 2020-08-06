@@ -55,7 +55,7 @@ public:
         virtual void on_accept_error(const Error& e) = 0;
     };
 
-    virtual ~Acceptor() {}
+    virtual ~Acceptor() noexcept(false) {}
 
     /**
      * Set the listener of the Acceptor object.
