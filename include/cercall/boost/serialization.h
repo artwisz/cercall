@@ -28,6 +28,7 @@
 #include "cercall/details/messenger.h"
 #include <sstream>
 #include <boost/archive/basic_archive.hpp>
+#include <boost/serialization/unique_ptr.hpp>
 
 namespace cercall {
 namespace boost {

@@ -53,7 +53,7 @@ set(GTEST_CXX_FLAGS "${cxx_strict}")
 
 cxx_library(gtest "${GTEST_CXX_FLAGS}" ${gtest_path}/src/gtest-all.cc)
 cxx_library(gtest_main "${GTEST_CXX_FLAGS}" testmain.cpp)
-target_link_libraries(gtest_main PRIVATE gtest ${BOOST_SYSTEM} ${CMAKE_THREAD_LIBS_INIT})
+target_link_libraries(gtest_main gtest ${BOOST_SYSTEM} ${CMAKE_THREAD_LIBS_INIT})
 
 if (${USE_BOOST_ASIO})
 set(TEST_LIBS "${CMAKE_THREAD_LIBS_INIT} ${BOOST_SYSTEM}")
