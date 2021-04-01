@@ -57,7 +57,7 @@ target_link_libraries(gtest ${CMAKE_THREAD_LIBS_INIT})
 
 add_library(gtest_main testmain.cpp)
 set_target_properties(gtest_main PROPERTIES COMPILE_FLAGS "${GTEST_CXX_FLAGS}")
-target_link_libraries(gtest_main ${CMAKE_THREAD_LIBS_INIT} ${BOOST_SYSTEM})
+target_link_libraries(gtest_main gtest ${CMAKE_THREAD_LIBS_INIT} ${BOOST_SYSTEM})
 
 if (${USE_BOOST_ASIO})
 set(TEST_LIBS "${CMAKE_THREAD_LIBS_INIT} ${BOOST_SYSTEM}")
@@ -70,41 +70,35 @@ set(CXX_TEST_BINARY_FLAGS "${cxx_default} -DTEST_CEREAL_BINARY")
 
 cxx_executable_with_flags(calltest_server "${CXX_TEST_BINARY_FLAGS}" "${TEST_LIBS}"
                             calltestserver.cpp ${CMAKE_SOURCE_DIR}/utils/program.cpp ${CERCALL_HEADERS})
-cxx_executable_with_flags(calltest "${CXX_TEST_BINARY_FLAGS}" "" calltest.cpp process.cpp
+cxx_executable_with_flags(calltest "${CXX_TEST_BINARY_FLAGS}" gtest_main calltest.cpp process.cpp
                             ${CMAKE_SOURCE_DIR}/utils/program.cpp ${CERCALL_HEADERS})
-target_link_libraries(calltest gtest_main gtest)
 
 cxx_executable_with_flags(eventstest_server "${CXX_TEST_BINARY_FLAGS}" "${TEST_LIBS}"
                             eventstestserver.cpp ${CMAKE_SOURCE_DIR}/utils/program.cpp ${CERCALL_HEADERS})
-cxx_executable_with_flags(eventstest "${CXX_TEST_BINARY_FLAGS}" "" eventstest.cpp process.cpp
+cxx_executable_with_flags(eventstest "${CXX_TEST_BINARY_FLAGS}" gtest_main eventstest.cpp process.cpp
                             ${CMAKE_SOURCE_DIR}/utils/program.cpp ${CERCALL_HEADERS})
-target_link_libraries(eventstest gtest_main gtest)
 
 cxx_executable_with_flags(errorstest_server "${CXX_TEST_BINARY_FLAGS}" "${TEST_LIBS}"
                             calltestserver.cpp ${CMAKE_SOURCE_DIR}/utils/program.cpp ${CERCALL_HEADERS})
-cxx_executable_with_flags(errorstest "${CXX_TEST_BINARY_FLAGS}" "" errorstest.cpp process.cpp
+cxx_executable_with_flags(errorstest "${CXX_TEST_BINARY_FLAGS}" gtest_main errorstest.cpp process.cpp
                             ${CMAKE_SOURCE_DIR}/utils/program.cpp ${CERCALL_HEADERS})
-target_link_libraries(errorstest gtest_main gtest)
 
 set(CXX_TEST_JSON_FLAGS "${cxx_default} -DTEST_CEREAL_JSON")
 
 cxx_executable_with_flags(calltestjson_server "${CXX_TEST_JSON_FLAGS}" "${TEST_LIBS}"
                             calltestserver.cpp ${CMAKE_SOURCE_DIR}/utils/program.cpp ${CERCALL_HEADERS})
-cxx_executable_with_flags(calltestjson "${CXX_TEST_JSON_FLAGS}" "" calltest.cpp process.cpp
+cxx_executable_with_flags(calltestjson "${CXX_TEST_JSON_FLAGS}" gtest_main calltest.cpp process.cpp
                             ${CMAKE_SOURCE_DIR}/utils/program.cpp ${CERCALL_HEADERS})
-target_link_libraries(calltestjson gtest_main gtest)
 
 cxx_executable_with_flags(eventstestjson_server "${CXX_TEST_JSON_FLAGS}" "${TEST_LIBS}"
                             eventstestserver.cpp ${CMAKE_SOURCE_DIR}/utils/program.cpp ${CERCALL_HEADERS})
-cxx_executable_with_flags(eventstestjson "${CXX_TEST_JSON_FLAGS}" "" eventstest.cpp process.cpp
+cxx_executable_with_flags(eventstestjson "${CXX_TEST_JSON_FLAGS}" gtest_main eventstest.cpp process.cpp
                             ${CMAKE_SOURCE_DIR}/utils/program.cpp ${CERCALL_HEADERS})
-target_link_libraries(eventstestjson gtest_main gtest)
 
 cxx_executable_with_flags(errorstestjson_server "${CXX_TEST_JSON_FLAGS}" "${TEST_LIBS}"
                             calltestserver.cpp ${CMAKE_SOURCE_DIR}/utils/program.cpp ${CERCALL_HEADERS})
-cxx_executable_with_flags(errorstestjson "${CXX_TEST_JSON_FLAGS}" "" errorstest.cpp process.cpp
+cxx_executable_with_flags(errorstestjson "${CXX_TEST_JSON_FLAGS}" gtest_main errorstest.cpp process.cpp
                             ${CMAKE_SOURCE_DIR}/utils/program.cpp ${CERCALL_HEADERS})
-target_link_libraries(errorstestjson gtest_main gtest)
 
 add_test(NAME calltest-cereal-binary COMMAND calltest)
 add_test(NAME eventstest-cereal-binary COMMAND eventstest)
@@ -125,22 +119,21 @@ set(TEST_LIBS "${CMAKE_THREAD_LIBS_INIT} ${BOOST_SYSTEM} ${BOOST_SERIALIZATION}"
 
 cxx_executable_with_flags(calltestboosttext_server "${CXX_TEST_BOOST_TEXT_FLAGS}" "${TEST_LIBS}"
                           calltestserver.cpp ${CMAKE_SOURCE_DIR}/utils/program.cpp ${CERCALL_HEADERS})
-cxx_executable_with_flags(calltestboosttext "${CXX_TEST_BOOST_TEXT_FLAGS}" ""
+cxx_executable_with_flags(calltestboosttext "${CXX_TEST_BOOST_TEXT_FLAGS}" gtest_main
                           calltest.cpp process.cpp ${CMAKE_SOURCE_DIR}/utils/program.cpp ${CERCALL_HEADERS})
-
-target_link_libraries(calltestboosttext ${BOOST_SERIALIZATION} gtest_main gtest)
+target_link_libraries(calltestboosttext ${BOOST_SERIALIZATION})
 
 cxx_executable_with_flags(eventstestboosttext_server "${CXX_TEST_BOOST_TEXT_FLAGS}" "${TEST_LIBS}"
                           eventstestserver.cpp ${CMAKE_SOURCE_DIR}/utils/program.cpp ${CERCALL_HEADERS})
-cxx_executable_with_flags(eventstestboosttext "${CXX_TEST_BOOST_TEXT_FLAGS}" ""
+cxx_executable_with_flags(eventstestboosttext "${CXX_TEST_BOOST_TEXT_FLAGS}" gtest_main
                           eventstest.cpp process.cpp ${CMAKE_SOURCE_DIR}/utils/program.cpp ${CERCALL_HEADERS})
-target_link_libraries(eventstestboosttext ${BOOST_SERIALIZATION} gtest_main gtest)
+target_link_libraries(eventstestboosttext ${BOOST_SERIALIZATION})
 
 cxx_executable_with_flags(errorstestboosttext_server "${CXX_TEST_BOOST_TEXT_FLAGS}" "${TEST_LIBS}"
                           calltestserver.cpp ${CMAKE_SOURCE_DIR}/utils/program.cpp ${CERCALL_HEADERS})
-cxx_executable_with_flags(errorstestboosttext "${CXX_TEST_BOOST_TEXT_FLAGS}" ""
+cxx_executable_with_flags(errorstestboosttext "${CXX_TEST_BOOST_TEXT_FLAGS}" gtest_main
                           errorstest.cpp process.cpp ${CMAKE_SOURCE_DIR}/utils/program.cpp ${CERCALL_HEADERS})
-target_link_libraries(errorstestboosttext ${BOOST_SERIALIZATION} gtest_main gtest)
+target_link_libraries(errorstestboosttext ${BOOST_SERIALIZATION})
 
 
 ### Binary serialization
@@ -149,22 +142,21 @@ set(CXX_TEST_BOOST_BINARY_FLAGS "${cxx_default} -DTEST_BOOST_BINARY")
 
 cxx_executable_with_flags(calltestboostbinary_server "${CXX_TEST_BOOST_BINARY_FLAGS}" "${TEST_LIBS}"
                           calltestserver.cpp ${CMAKE_SOURCE_DIR}/utils/program.cpp ${CERCALL_HEADERS})
-cxx_executable_with_flags(calltestboostbinary "${CXX_TEST_BOOST_BINARY_FLAGS}" ""
+cxx_executable_with_flags(calltestboostbinary "${CXX_TEST_BOOST_BINARY_FLAGS}" gtest_main
                           calltest.cpp process.cpp ${CMAKE_SOURCE_DIR}/utils/program.cpp ${CERCALL_HEADERS})
-
-target_link_libraries(calltestboostbinary ${BOOST_SERIALIZATION} gtest_main gtest)
+target_link_libraries(calltestboostbinary ${BOOST_SERIALIZATION})
 
 cxx_executable_with_flags(eventstestboostbinary_server "${CXX_TEST_BOOST_BINARY_FLAGS}" "${TEST_LIBS}"
                           eventstestserver.cpp ${CMAKE_SOURCE_DIR}/utils/program.cpp ${CERCALL_HEADERS})
-cxx_executable_with_flags(eventstestboostbinary "${CXX_TEST_BOOST_BINARY_FLAGS}" ""
+cxx_executable_with_flags(eventstestboostbinary "${CXX_TEST_BOOST_BINARY_FLAGS}" gtest_main
                           eventstest.cpp process.cpp ${CMAKE_SOURCE_DIR}/utils/program.cpp ${CERCALL_HEADERS})
-target_link_libraries(eventstestboostbinary ${BOOST_SERIALIZATION} gtest_main gtest)
+target_link_libraries(eventstestboostbinary ${BOOST_SERIALIZATION})
 
 cxx_executable_with_flags(errorstestboostbinary_server "${CXX_TEST_BOOST_BINARY_FLAGS}" "${TEST_LIBS}"
                           calltestserver.cpp ${CMAKE_SOURCE_DIR}/utils/program.cpp ${CERCALL_HEADERS})
-cxx_executable_with_flags(errorstestboostbinary "${CXX_TEST_BOOST_BINARY_FLAGS}" ""
+cxx_executable_with_flags(errorstestboostbinary "${CXX_TEST_BOOST_BINARY_FLAGS}" gtest_main
                           errorstest.cpp process.cpp ${CMAKE_SOURCE_DIR}/utils/program.cpp ${CERCALL_HEADERS})
-target_link_libraries(errorstestboostbinary ${BOOST_SERIALIZATION} gtest_main gtest)
+target_link_libraries(errorstestboostbinary ${BOOST_SERIALIZATION})
 
 
 add_test(NAME calltest-boost-text COMMAND calltestboosttext)
