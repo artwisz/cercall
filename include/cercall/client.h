@@ -285,7 +285,7 @@ private:
 
     void dispatch_error_to_closure(const std::string& errorMsg, ClosureFunction& cl)
     {
-        Serialization::deserialize_call(myArchives.inArch.get(), errorMsg, [this, cl](const std::string&, ResultArchive& arRes){
+        Serialization::deserialize_call(myArchives.inArch.get(), errorMsg, [cl](const std::string&, ResultArchive& arRes){
             cl(arRes);
         });
     }
@@ -305,7 +305,7 @@ private:
         myClosures.clear();
     }
 
-    uint32_t on_incoming_data(Transport& tr, uint32_t dataLenInBuffer) override
+    std::size_t on_incoming_data(Transport& tr, std::size_t dataLenInBuffer) override
     {
         check_thread_id("cercall::Client::on_incoming_data");
         return myMessenger.read(tr, dataLenInBuffer);

@@ -61,7 +61,7 @@ public:
          * @param dataLenInBuffer length of data available in the transport input buffer
          * @return number of bytes read from the transport input buffer
          */
-        virtual uint32_t on_incoming_data(Transport& tr, uint32_t dataLenInBuffer) = 0;
+        virtual std::size_t on_incoming_data(Transport& tr, std::size_t dataLenInBuffer) = 0;
     };
 
     virtual ~Transport() noexcept(false) {}

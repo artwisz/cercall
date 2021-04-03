@@ -172,7 +172,7 @@ private:
     }
 
     /** Not to be used, but to be overriden by derived classes. */
-    void open(const cercall::Closure<bool>&)
+    void open(const cercall::Closure<bool>&) override
     {
     }
 

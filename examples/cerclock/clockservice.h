@@ -46,7 +46,7 @@ public:
 
     void cancel_alarm(ClockAlarmId alarm, Closure<void> closure) override;
 
-    void on_connection_error(cercall::Transport&, const cercall::Error&);
+    void on_connection_error(cercall::Transport&, const cercall::Error&) override;
 
 private:
     struct Alarm

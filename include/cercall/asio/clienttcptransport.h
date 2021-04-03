@@ -33,7 +33,7 @@ public:
     ClientTcpTransport(::asio::io_service& ios,
                        const std::string& hostName,
                        const std::string& serviceName)
-        : TcpTransport(ios), myIoService (ios), myHostName (hostName), myServiceName(serviceName), myResolver(ios) {}
+        : TcpTransport(ios), myHostName (hostName), myServiceName(serviceName), myResolver(ios) {}
 
     bool open() override
     {
@@ -105,7 +105,6 @@ private:
         }
     }
 
-    ::asio::io_service& myIoService;
     std::string myHostName;
     std::string myServiceName;
     ::asio::ip::tcp::resolver myResolver;

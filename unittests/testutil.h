@@ -28,7 +28,7 @@
 #include "program.h"
 
 #define TEST_SERVICE_HOST "127.0.0.1"
-#define TEST_SERVICE_PORT  56789
+#define TEST_SERVICE_PORT  static_cast<unsigned short>(56789)
 #define TEST_SERVICE_PORT_STR "56789"
 
 template<typename T>

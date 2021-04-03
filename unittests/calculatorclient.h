@@ -61,7 +61,7 @@ public:
         this->send_call(__func__);
     }
 
-    void get_connected_clients_count(cercall::Closure<size_t> cl)
+    void get_connected_clients_count(cercall::Closure<size_t> cl) override
     {
         this->send_call(__func__, cl);
     }

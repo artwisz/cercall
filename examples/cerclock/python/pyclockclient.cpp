@@ -70,7 +70,7 @@ void ClockClient::set__tick_interval ( std::chrono::milliseconds tickInterval )
 
 void ClockClient::set__alarm ( std::string tag, std::chrono::system_clock::duration after )
 {
-    set_alarm ( tag, after, [this, after] ( const cercall::Result<ClockAlarmId>& result ) {
+    set_alarm ( tag, after, [this] ( const cercall::Result<ClockAlarmId>& result ) {
         if ( result.error() ) {
             throw std::runtime_error ( result.error().message() );
         } else {

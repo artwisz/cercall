@@ -154,8 +154,6 @@ class FunctionDict
     };
 
     typedef std::map<std::string, DictEntry> FuncDictType;
-    typedef void (SI::*GenericMemberFunctionType)();
-    typedef std::map<GenericMemberFunctionType, typename FuncDictType::const_iterator, CompareMemFn<SI>> MemberFunctionMap;
 
     template <class, bool, class = void>
     struct result_type_traits
@@ -184,7 +182,6 @@ public:
 
         myFunctionDict[functionName].func = make_function_caller<SI, Serialization, OneWay, ResT, ArgsTuple>(std::mem_fn(function));
         myFunctionDict[functionName].oneWay = OneWay;
-        myFunctionMap[reinterpret_cast<GenericMemberFunctionType>(function)] = myFunctionDict.find(functionName);
     }
 
     template<bool OneWay>
@@ -196,7 +193,6 @@ public:
 
         myFunctionDict[functionName].func = make_function_caller<SI, Serialization, OneWay, void, ArgsTuple>(std::mem_fn(function));
         myFunctionDict[functionName].oneWay = OneWay;
-        myFunctionMap[reinterpret_cast<GenericMemberFunctionType>(function)] = myFunctionDict.find(functionName);
     }
 
     template<bool OneWay, typename BaseInterface, typename ...Args>
@@ -209,24 +205,12 @@ public:
         myFunctionDict[functionName].func
                 = make_function_caller<SI, Serialization, OneWay, ResT, ArgsTuple>(std::mem_fn(function));
         myFunctionDict[functionName].oneWay = OneWay;
-        myFunctionMap[reinterpret_cast<GenericMemberFunctionType>(function)] = myFunctionDict.find(functionName);
     }
 
     void call_function(std::shared_ptr<Transport>& clTr, const std::string& functionName, SI& obj,
                        ResultArchive* resAr, ArgsArchive& args, ResultHandler rh)
     {
         find(functionName)->second.func(obj, clTr, args, resAr, functionName, rh);
-    }
-
-    template<typename ...Args>
-    const std::string& find_function_name(void (SI::*function)(Args...))
-    {
-        auto found = myFunctionMap.find(reinterpret_cast<GenericMemberFunctionType>(function));
-        if (found == myFunctionMap.end()) {
-            throw std::logic_error("function name could not be found");
-        } else {
-            return found->second->first;
-        }
     }
 
     bool is_one_way(const std::string& functionName)
@@ -236,7 +220,6 @@ public:
 
 private:
     FuncDictType myFunctionDict;
-    MemberFunctionMap myFunctionMap;
 
     typename FuncDictType::iterator find(const std::string& functionName)
     {

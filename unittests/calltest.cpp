@@ -239,7 +239,7 @@ TEST_F(CallTest, test_many_clients)
         do {
             std::vector<int32_t> v = generate_data(3u);
             bool gotResult = false;
-            myClient->add(v[0], v[1],v[2], [&gotResult, &v](const cercall::Result<int32_t>& res){
+            myClient->add(static_cast<int8_t>(v[0]), static_cast<int16_t>(v[1]),v[2], [&gotResult, &v](const cercall::Result<int32_t>& res){
                 EXPECT_FALSE( !res);
                 EXPECT_EQ(res.get_value(), (static_cast<int8_t>(v[0]) + static_cast<int16_t>(v[1]) + v[2]));
                 gotResult = true;

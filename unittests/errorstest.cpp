@@ -134,7 +134,7 @@ TEST_F(ErrorsTest, test_double_call_on_service)
             messenger.init_transport(t);
             return res;
         }
-        uint32_t on_incoming_data(cercall::Transport& tr, uint32_t dataLenInBuffer) override
+        std::size_t on_incoming_data(cercall::Transport& tr, std::size_t dataLenInBuffer) override
         {
             return messenger.read(tr, dataLenInBuffer);
         }

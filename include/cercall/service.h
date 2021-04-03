@@ -285,7 +285,7 @@ private:
         throw std::runtime_error("cercall::Service::on_accept_error: accept failed: " + e.message());
     }
 
-    uint32_t on_incoming_data(Transport& client, uint32_t dataLenInBuffer) override
+    std::size_t on_incoming_data(Transport& client, std::size_t dataLenInBuffer) override
     {
         check_thread_id("cercall::Service::on_incoming_data");
         auto clStateIt = myClients.find(&client);
@@ -294,7 +294,7 @@ private:
     }
 
     /* The default implementation does nothing. Service implementation classes can override it if they need it.  */
-    void on_connection_error(Transport&, const Error&)
+    void on_connection_error(Transport&, const Error&) override
     {
     }
 

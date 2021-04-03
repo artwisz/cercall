@@ -25,12 +25,11 @@ if(NOT GCOV_PATH)
     message(FATAL_ERROR "gcov not found")
 endif(NOT GCOV_PATH)
 
-set(COVERAGE_FLAGS "-g -O0 --coverage -fprofile-arcs -ftest-coverage")
-
 if(CMAKE_C_COMPILER_ID STREQUAL "GNU")
+    set(COVERAGE_FLAGS "-g -O0 --coverage -fprofile-arcs -ftest-coverage")
     link_libraries(gcov)
 else()
-    message(FATAL_ERROR "coverage not supported with this compiler")
+    message(WARNING "coverage not supported with this compiler")
 endif()
 
 add_custom_target(coverage

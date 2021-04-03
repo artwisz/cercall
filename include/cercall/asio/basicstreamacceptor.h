@@ -70,7 +70,7 @@ public:
             log<debug>(O_LOG_TOKEN, "open acceptor");
             myAcceptor.open(myEndpoint.protocol(), ec);
             if (ec) {
-                log<error>(O_LOG_TOKEN, "open error - %s", ec.message());
+                log<error>(O_LOG_TOKEN, "open error - %s", ec.message().c_str());
                 myListener->on_accept_error(Error(ec));
                 return;
             }
@@ -78,7 +78,7 @@ public:
             log<debug>(O_LOG_TOKEN, "bind endpoint");
             myAcceptor.bind(myEndpoint, ec);
             if (ec) {
-                log<error>(O_LOG_TOKEN, "bind error - %s", ec.message());
+                log<error>(O_LOG_TOKEN, "bind error - %s", ec.message().c_str());
                 myListener->on_accept_error(Error(ec));
                 return;
             }
@@ -86,7 +86,7 @@ public:
             myAcceptor.listen((maxPendingClientConnections > 0) ? maxPendingClientConnections
                                                                 : StreamProtocol::socket::max_connections, ec);
             if (ec) {
-                log<error>(O_LOG_TOKEN, "listen error - %s", ec.message());
+                log<error>(O_LOG_TOKEN, "listen error - %s", ec.message().c_str());
                 myListener->on_accept_error(Error(ec));
             }
         }
@@ -116,7 +116,7 @@ private:
                 std::shared_ptr<TransportType> clientTr { new TransportType(socket) };
                 myListener->on_client_accepted(clientTr);
             } else if (is_open() || ec != ::asio::error::operation_aborted) {
-                log<error>(O_LOG_TOKEN, "async_accept error - %s", ec.message());
+                log<error>(O_LOG_TOKEN, "async_accept error - %s", ec.message().c_str());
                 myListener->on_accept_error(cercall::Error(ec));
             }
             if (is_open()) {

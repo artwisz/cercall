@@ -39,17 +39,26 @@ public:
 
     Messenger(HandlerType messageHandler)
         : myMsgHandler(messageHandler) {}
+
+    Messenger(const Messenger& other)
+    {
+        myMsgHandler = other.myMsgHandler;
+        myReceiveState = MsgRecvState::HEADER;
+    }
+
     Messenger& operator=(const Messenger& other)
     {
         myMsgHandler = other.myMsgHandler;
         myReceiveState = MsgRecvState::HEADER;
         return *this;
     }
+
     void init_transport(Transport& tr)
     {
         o_assert(myReceiveState == MsgRecvState::HEADER);
         tr.read(HEADER_SIZE);
     }
+
     std::size_t read(Transport& tr, std::size_t dataLenInBuffer)
     {
         bool hasMoreData = true;
