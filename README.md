@@ -55,11 +55,12 @@ Threads add complexity to every program. With CerCall it is easy to add another 
 
 Developed and tested on Ubuntu 18.04.1, with:
 
-* Asio Standalone ver. 1.10.6, 1.12.1
-* Boost ver. 1.67
+* Asio Standalone ver. 1.10.6, 1.12.1, 1.18.1
+* Boost ver. 1.67, 1.75
 * Googletest ver. 1.7.0
-* Cereal ver. 1.2.2
-* gcc ver. 7.3.0
+* Cereal ver. 1.2.2, 1.3.0
+* gcc ver. 7.3.0, 7.5.0, 10.1.0
+* clang ver. 11
 
 ## A quick how-to
 

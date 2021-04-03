@@ -26,6 +26,7 @@
 #include <unordered_map>
 #include <list>
 #include <memory>
+#include <type_traits>
 
 namespace cercall {
 namespace details {
@@ -35,15 +36,21 @@ class CallQueue
 {
 public:
     using DequeueAction = std::function<void(const std::string&, cercall::Transport&)>;
-    bool can_enqueue(const std::string& funcName)
+
+    template<unsigned L = CallQueueLimit>
+    typename std::enable_if<L != 0, bool>::type can_enqueue(const std::string& funcName)
     {
-        if (CallQueueLimit == 0) {
-            return false;
-        } else if (myQueueMap.find(funcName) == myQueueMap.end()) {
+        if (myQueueMap.find(funcName) == myQueueMap.end()) {
             return true;
         } else {
             return myQueueMap[funcName]->size() < CallQueueLimit;
         }
+    }
+
+    template<unsigned L = CallQueueLimit>
+    typename std::enable_if<L == 0, bool>::type can_enqueue(const std::string&)
+    {
+        return false;
     }
 
     void enqueue_call(const std::string& funcName, DequeueAction dequeueAction)
